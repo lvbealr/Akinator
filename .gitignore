@@ -31,5 +31,9 @@
 *.out
 *.app
 
+# TRASH
+build/
+temp.dot
+
 # REMOVE DED FROM GITHUB
 images/
