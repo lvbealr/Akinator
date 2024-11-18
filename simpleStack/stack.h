@@ -1,4 +1,5 @@
 #include "customWarning.h"
+#include "binaryTree.h"
 
 #define FREE_(field) { \
   free(field);         \
@@ -6,9 +7,9 @@
 }
 
 struct Stack {
-  int    capacity = {};
-  int    size     = {};
-  char **data     = {};
+  int    capacity        = {};
+  int    size            = {};
+  node<char*> **data     = {};
 };
 
 enum stackError {
@@ -25,8 +26,8 @@ enum changeMemory {
   ADD_MEMORY  =  1
 };
 
-stackError stackInitialize (Stack *stack, int    capacity   );
-stackError stackDestruct   (Stack *stack                    );
-stackError stackPush       (Stack *stack, char  *data       );
-stackError stackPop        (Stack *stack, char **dataPointer);
-stackError stackResize     (Stack *stack, changeMemory mode );
+stackError stackInitialize (Stack *stack, int            capacity   );
+stackError stackDestruct   (Stack *stack                            );
+stackError stackPush       (Stack *stack, node<char *>  *data       );
+stackError stackPop        (Stack *stack, node<char *> **dataPointer);
+stackError stackResize     (Stack *stack, changeMemory   mode       );

@@ -8,7 +8,7 @@ stackError stackInitialize (Stack *stack, int capacity) {
 
   stack->size     = 0;
   stack->capacity = capacity;
-  stack->data     = (char **)calloc(capacity, sizeof(char *));
+  stack->data     = (node<char *> **)calloc(capacity, sizeof(node<char *> *));
 
   customWarning(stack->data != NULL, BAD_DATA_POINTER);
 
@@ -26,7 +26,7 @@ stackError stackDestruct   (Stack *stack) {
   return STACK_NO_ERROR;
 }
 
-stackError stackPush       (Stack *stack, char *data) {
+stackError stackPush       (Stack *stack, node<char *> *data) {
   customWarning(stack != NULL, STACK_NULL_POINTER);
   customWarning(data  != NULL, BAD_DATA_POINTER  );
 
@@ -38,7 +38,7 @@ stackError stackPush       (Stack *stack, char *data) {
   return STACK_NO_ERROR;
 }
 
-stackError stackPop        (Stack *stack, char **dataPointer) {
+stackError stackPop        (Stack *stack, node<char *> **dataPointer) {
   customWarning(stack          != NULL, STACK_NULL_POINTER);
   customWarning(dataPointer    != NULL, BAD_DATA_POINTER  );
   customWarning(stack->size    >     0, BAD_SIZE          );
@@ -61,7 +61,7 @@ stackError stackResize(Stack *stack, changeMemory mode) {
       {
         int newCapacity = stack->capacity * 2;
 
-        stack->data = (char **)realloc(stack->data, sizeof(char *) * (size_t)newCapacity);
+        stack->data = (node<char *> **)realloc(stack->data, sizeof(node<char *> *) * (size_t)newCapacity);
         customWarning(stack->data != NULL, BAD_DATA_POINTER);
 
         stack->capacity *= 2;
@@ -71,7 +71,7 @@ stackError stackResize(Stack *stack, changeMemory mode) {
       {
         int newCapacity = stack->capacity / 2;
 
-        stack->data = (char **)realloc(stack->data, sizeof(char *) * (size_t)newCapacity);
+        stack->data = (node<char *> **)realloc(stack->data, sizeof(node<char *> *) * (size_t)newCapacity);
         customWarning(stack->data != NULL, BAD_DATA_POINTER);
 
         stack->capacity /= 2;
