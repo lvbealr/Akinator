@@ -2,6 +2,7 @@
 #include "consoleParser.h"
 #include "akinator.h"
 #include "colorPrint.h"
+#include "stack.h"
 
 akinatorError akinatorInitialize(Akinator *akinator, char *treeRootValue, int argc, char *argv[]) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
@@ -167,28 +168,52 @@ akinatorError guessCharacter(Akinator *akinator) {
 akinatorError describeCharacter(Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
 
+  Stack *descriptionStack = (Stack *)calloc(1, sizeof(Stack));
+  // // customWarning(descriptionStack != NULL, STACK_NULL_POINTER);
+
+  stackInitialize(descriptionStack, 10);
+
   customPrint(white, bold, bgDefault, "Whose description do you want to receive? ");
   scanf("%s", akinator->userAnswer);
 
-  node<char *> *foundNode = binaryTreeFindNode(akinator->tree->root, akinator->userAnswer);
+  node<char *> *foundNode     = binaryTreeFindNode(akinator->tree->root, akinator->userAnswer);
+  node<char *> *foundNodeCopy = foundNode;
 
-  customPrint(lightblue, bold, bgDefault, "%s - ", foundNode->data);
+  node<char *> *movePtr       = foundNode->parent;
 
-  node<char *> *movePtr    = foundNode->parent;
+  stackPush(descriptionStack, foundNode);
 
   while (movePtr) {
-    if (foundNode == movePtr->right) {
-      printf("%s ", movePtr->data);
+    stackPush(descriptionStack, movePtr);
+
+    foundNode = movePtr;
+    movePtr   = movePtr->parent;
+  }
+
+  node<char *> *popNode     = {};
+  stackPop(descriptionStack, &popNode);
+  node<char *> *popNodeCopy = popNode;
+
+  size_t stackSize = descriptionStack->size;
+
+  customPrint(lightblue, bold, bgDefault, "%s - ", foundNodeCopy->data);
+
+  for (size_t i = 0; i < stackSize; i++) {
+    stackPop(descriptionStack, &popNode);
+
+    if (popNode == popNodeCopy->right) {
+      printf("%s ", popNodeCopy->data);
     }
 
     else {
-      printf("not %s ", movePtr->data);
+      printf("not %s ", popNodeCopy->data);
     }
 
-    movePtr = movePtr->parent;
+    popNodeCopy = popNode;
   }
 
-  printf("\n\n");
+  stackDestruct(descriptionStack);
+  FREE_(descriptionStack);
 
   return AKINATOR_NO_ERRORS;
 }
