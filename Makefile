@@ -4,11 +4,11 @@ AKINATOR_SRC  = main.cpp userInterface.cpp akinator.cpp
 
 TARGET        = Akinator
 
-SUBMODULE_SRC = customWarning/customWarning.h colorPrint/colorPrint.cpp
+SUBMODULE_SRC = customWarning/customWarning.h colorPrint/colorPrint.cpp simpleStack/stack.cpp
 
 BUILD_DIR     = build/
 SRC_DIR       = src/
-CFLAGS        = -I customWarning/ -I include/ -I binaryTree/include/ -I colorPrint/
+CFLAGS        = -I customWarning/ -I include/ -I binaryTree/include/ -I colorPrint/ -I simpleStack/
 
 OBJECT        = $(patsubst %.cpp, %.o, $(SRC))
 BUILD_OBJ     = $(addprefix $(BUILD_DIR), $(OBJECT))
