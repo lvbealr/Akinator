@@ -1,6 +1,6 @@
 CXX           = g++
 
-AKINATOR_SRC  = main.cpp userInterface.cpp akinator.cpp
+AKINATOR_SRC  = main.cpp userInterface.cpp akinator.cpp audio.cpp
 
 TARGET        = Akinator
 
@@ -8,7 +8,8 @@ SUBMODULE_SRC = customWarning/customWarning.h colorPrint/colorPrint.cpp simpleSt
 
 BUILD_DIR     = build/
 SRC_DIR       = src/
-CFLAGS        = -I customWarning/ -I include/ -I binaryTree/include/ -I colorPrint/ -I simpleStack/
+CFLAGS        = -I customWarning/ -I include/ -I binaryTree/include/ -I colorPrint/ -I simpleStack/ \
+								-lsfml-audio -lsfml-system
 
 OBJECT        = $(patsubst %.cpp, %.o, $(SRC))
 BUILD_OBJ     = $(addprefix $(BUILD_DIR), $(OBJECT))
