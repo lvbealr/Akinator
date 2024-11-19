@@ -1,13 +1,34 @@
 #include <cstdlib>
 
+#include "audio.h"
+
 #include "akinator.h"
 #include "colorPrint.h"
 
-static const char *images[]    = {"1.jpg", "2.jpg", "3.jpg"};
+static const char *images[]    = {"1.jpg", "2.jpg", "3.jpg", "4.jpg"};
 static const size_t imagesSize = sizeof(images) / sizeof(images[0]);
 
+#define PLAY_SOUND(pathToSound) { \
+  pid_t pid;                      \
+  int rv;                         \
+  switch(pid = fork()) {          \
+    case 0:                       \
+      {                           \
+        playMusic(pathToSound);   \
+        exit(rv);                 \
+        break;                    \
+      }                           \
+                                  \
+    default:                      \
+      {                           \
+        break;                    \
+      }                           \
+  }                               \
+}
+
 void userGreeting(Akinator *akinator) {
-  system("ascii-image-converter images/3.jpg -C --braille --color-bg -d 70,30");
+  system("ascii-image-converter images/4.jpg -C --braille -d 73,30");
+  customPrint(red, bold, bgDefault, "\n%s\n", akinatorLogo);
   customPrint(lightblue, bold, bgDefault, "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n");
   customPrint(purple, bold, bgDefault, "  I am DED32 - an AI developed by the great Python Senior Dev @lvbealr\n");
   customPrint(lightblue, bold, bgDefault, "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n");
@@ -29,11 +50,27 @@ void userGreeting(Akinator *akinator) {
 
   customPrint(green, bold, bgDefault, "Would you play in audio mode? [Y(N)/y(n)]: ");
   scanf("%1s", akinator->audioMode);
+
+  switch (*akinator->audioMode) {
+    case 'Y':
+    case 'y':
+      {
+        PLAY_SOUND("audio/ded.wav");
+        break;
+      }
+
+    default:
+      {
+        *akinator->userAnswer = 'n';
+        break;
+      }
+  }
+
   printf("\n");
 }
 
 void chooseMode(Akinator *akinator) {
-  customPrint(white, bold, bgDefault, "Choose gamemode: \n\n");
+  customPrint(white, bold, bgDefault, "\nChoose gamemode: \n\n");
   customPrint(green, bold, bgDefault, "[G/g] ");
   customPrint(white, bold, bgDefault, "I'll try to guess the character you wished for!\n");
   customPrint(green, bold, bgDefault, "[D/d] ");
