@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "binaryTree.h"
 #include "consoleParser.h"
 #include "akinator.h"
@@ -165,40 +167,55 @@ akinatorError guessCharacter(Akinator *akinator) {
   return AKINATOR_NO_ERRORS;
 }
 
-akinatorError describeCharacter(Akinator *akinator) {
-  customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
-
-  Stack *descriptionStack = (Stack *)calloc(1, sizeof(Stack));
-  // // customWarning(descriptionStack != NULL, STACK_NULL_POINTER);
-
-  stackInitialize(descriptionStack, 10);
-
-  customPrint(white, bold, bgDefault, "Whose description do you want to receive? ");
-  scanf("%s", akinator->userAnswer);
+Stack *fillCharacterStack (Akinator *akinator) {
+  // TODO CHECK
+  Stack *personality = (Stack *)calloc(1, sizeof(Stack));
+  // TODO check
+  stackInitialize(personality, 10);
 
   node<char *> *foundNode     = binaryTreeFindNode(akinator->tree->root, akinator->userAnswer);
+
+  if (foundNode == NULL) {
+    return NULL;
+  }
+
   node<char *> *foundNodeCopy = foundNode;
 
   node<char *> *movePtr       = foundNode->parent;
 
-  stackPush(descriptionStack, foundNode);
+  stackPush(personality, foundNode);
 
   while (movePtr) {
-    stackPush(descriptionStack, movePtr);
+    stackPush(personality, movePtr);
 
     foundNode = movePtr;
     movePtr   = movePtr->parent;
   }
 
+  return personality;
+}
+
+akinatorError describeCharacter(Akinator *akinator) {
+  customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
+
+  customPrint(white, bold, bgDefault, "Whose description do you want to receive? ");
+  scanf("%s", akinator->userAnswer);
+
+  Stack *descriptionStack = fillCharacterStack(akinator);
+  customWarning(descriptionStack != NULL, NO_OBJECT_FOUND);
+
   node<char *> *popNode     = {};
   stackPop(descriptionStack, &popNode);
   node<char *> *popNodeCopy = popNode;
 
-  size_t stackSize = descriptionStack->size;
+  if (!(descriptionStack->data[0])) {
+    customPrint(red, bold, bgDefault, "This object has no description!\n");
+    return BAD_STACK_POINTER;
+  }
 
-  customPrint(lightblue, bold, bgDefault, "%s - ", foundNodeCopy->data);
+  customPrint(lightblue, bold, bgDefault, "%s - ", (descriptionStack->data[0])->data);
 
-  for (size_t i = 0; i < stackSize; i++) {
+  while (descriptionStack->size) {
     stackPop(descriptionStack, &popNode);
 
     if (popNode == popNodeCopy->right) {
@@ -212,6 +229,8 @@ akinatorError describeCharacter(Akinator *akinator) {
     popNodeCopy = popNode;
   }
 
+  printf("\n");
+
   stackDestruct(descriptionStack);
   FREE_(descriptionStack);
 
@@ -220,6 +239,38 @@ akinatorError describeCharacter(Akinator *akinator) {
 
 akinatorError compareCharacters(Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
+
+  customPrint(white, bold, bgDefault, "Enter the names of the objects you want to compare!\n");
+
+  printf("First object: ");
+  scanf("%s", akinator->userAnswer);
+  Stack *firstCharacter  = fillCharacterStack(akinator);
+  customWarning(firstCharacter != NULL, NO_OBJECT_FOUND);
+
+  printf("Second object: ");
+  scanf("%s", akinator->userAnswer);
+  Stack *secondCharacter = fillCharacterStack(akinator);
+  customWarning(secondCharacter != NULL, NO_OBJECT_FOUND);
+
+  char *firstName  = firstCharacter->data[0]->data;
+  char *secondName = secondCharacter->data[0]->data;
+
+  node<char *> *firstNode  = {};
+  node<char *> *secondNode = {};
+
+  Stack common     = {};
+  Stack firstDiff  = {};
+  Stack secondDiff = {};
+
+  stackInitialize(&common,     10);
+  stackInitialize(&firstDiff,  10);
+  stackInitialize(&secondDiff, 10);
+
+  
+
+  stackDestruct  (&common);
+  stackDestruct  (&firstDiff);
+  stackDestruct  (&secondDiff);
 
   return AKINATOR_NO_ERRORS;
 }
