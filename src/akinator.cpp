@@ -1,4 +1,10 @@
 #include <cstring>
+#include <cassert>
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "binaryTree.h"
 #include "consoleParser.h"
@@ -42,18 +48,32 @@ akinatorError runAkinator(Akinator *akinator) {
 }
 
 node<char *> *akinatorInitNode(char *value) {
-  // TODO check
-  node<char *> *initNode = (node<char *> *)calloc(1, sizeof(node<char *>));
-  initNode->data         = (char *)calloc(MAX_ANSWER_LENGTH, sizeof(char));
+  if (value == NULL) {
+    return NULL;
+  }
 
-  strcpy(initNode->data, value);
-  // TODO check
+  node<char *> *initNode = (node<char *> *)calloc(1, sizeof(node<char *>));
+  if (!initNode) {
+    return NULL;
+  }
+
+  initNode->data         = (char *)calloc(MAX_ANSWER_LENGTH, sizeof(char));
+  if (!initNode->data) {
+    return NULL;
+  }
+
+  if (!strcpy(initNode->data, value)) {
+    return NULL;
+  }
 
   return initNode;
 }
 
 binaryTreeError akinatorLinkNode(Akinator *akinator, node<char *> **parentNode, node <char *> **newNode, linkType nodeType) {
-  // TODO check
+  assert       (akinator    != NULL);
+  customWarning(*parentNode != NULL, NODE_BAD_POINTER);
+  customWarning(*newNode    != NULL, NODE_BAD_POINTER);
+
   switch (nodeType) {
     case FEATURE_NODE:
       {
@@ -97,7 +117,9 @@ binaryTreeError akinatorLinkNode(Akinator *akinator, node<char *> **parentNode, 
 }
 
 binaryTreeError switchNode(Akinator *akinator, node<char *> *currentNode) {
-  // TODO check
+  assert       (akinator    != NULL);
+  customWarning(currentNode != NULL, NODE_BAD_POINTER);
+
   customPrint(white, bold, bgDefault, "It ");
   customPrint(lightblue, bold, bgDefault, "%s? ", currentNode->data);
   printf("Your answer [Y(y)/N(n)]: ");
@@ -168,9 +190,11 @@ akinatorError guessCharacter(Akinator *akinator) {
 }
 
 Stack *fillCharacterStack (Akinator *akinator) {
-  // TODO CHECK
+  assert(akinator != NULL);
+
   Stack *personality = (Stack *)calloc(1, sizeof(Stack));
-  // TODO check
+  assert(personality != NULL);
+
   stackInitialize(personality, 10);
 
   node<char *> *foundNode     = binaryTreeFindNode(akinator->tree->root, akinator->userAnswer);
@@ -258,19 +282,7 @@ akinatorError compareCharacters(Akinator *akinator) {
   node<char *> *firstNode  = {};
   node<char *> *secondNode = {};
 
-  Stack common     = {};
-  Stack firstDiff  = {};
-  Stack secondDiff = {};
-
-  stackInitialize(&common,     10);
-  stackInitialize(&firstDiff,  10);
-  stackInitialize(&secondDiff, 10);
-
-  
-
-  stackDestruct  (&common);
-  stackDestruct  (&firstDiff);
-  stackDestruct  (&secondDiff);
+  // TODO
 
   return AKINATOR_NO_ERRORS;
 }
@@ -279,7 +291,9 @@ akinatorError showBase          (Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
 
   SAVE_DUMP_IMAGE(akinator->tree);
-  char *buffer = (char *)calloc(MAX_CMD_BUFFER_SIZE, sizeof(char)); // TODO CHECK
+  char *buffer = (char *)calloc(MAX_CMD_BUFFER_SIZE, sizeof(char));
+  customWarning(buffer != NULL, AKINATOR_BAD_BUFFER);
+
   snprintf(buffer, MAX_CMD_BUFFER_SIZE, "xdg-open %s", akinator->tree->infoData->htmlDumpPath);
   system(buffer);
 
@@ -288,8 +302,25 @@ akinatorError showBase          (Akinator *akinator) {
   return AKINATOR_NO_ERRORS;
 }
 
+akinatorError saveDataBase (Akinator *akinator) {
+  customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
+
+  FILE *dbOut = fopen(akinator->tree->infoData->dataBasePath, "w");
+  customWarning(dbOut != NULL, NO_DB_FILE_FOUND);
+
+  printDataBase(akinator->tree->root, dbOut);
+
+  customPrint(white, bold, bgDefault, "Saving database... OK! (%s)", akinator->tree->infoData->dataBasePath);
+
+  fclose(dbOut);
+
+  return AKINATOR_NO_ERRORS;
+}
+
 akinatorError quitWithSave      (Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
+
+  saveDataBase(akinator);
 
   return AKINATOR_NO_ERRORS;
 }

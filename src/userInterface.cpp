@@ -8,24 +8,6 @@
 static const char *images[]    = {"1.jpg", "2.jpg", "3.jpg", "4.jpg"};
 static const size_t imagesSize = sizeof(images) / sizeof(images[0]);
 
-#define PLAY_SOUND(pathToSound) { \
-  pid_t pid;                      \
-  int rv;                         \
-  switch(pid = fork()) {          \
-    case 0:                       \
-      {                           \
-        playMusic(pathToSound);   \
-        exit(rv);                 \
-        break;                    \
-      }                           \
-                                  \
-    default:                      \
-      {                           \
-        break;                    \
-      }                           \
-  }                               \
-}
-
 void userGreeting(Akinator *akinator) {
   system("ascii-image-converter images/4.jpg -C --braille -d 73,30");
   customPrint(red, bold, bgDefault, "\n%s\n", akinatorLogo);
@@ -125,7 +107,7 @@ void chooseMode(Akinator *akinator) {
     case 's':
       {
         quitWithSave(akinator);
-        chooseMode(akinator);
+        quitWithoutSave(akinator);
         break;
       }
 
