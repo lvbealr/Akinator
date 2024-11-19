@@ -18,7 +18,8 @@ static const char *akinatorLogo =
 "| |__| || |____    | |   | |__| || |/  | / ____ /   | |   | |__| || | / / \n"
 "|_____/ |______|   |_|    /____/ |_| /_|/_/    /_/  |_|    /____/ |_|  /_/ \n";
 
-const size_t MAX_ANSWER_LENGTH = 50;
+const size_t MAX_ANSWER_LENGTH          = 50;
+const size_t MAX_DATABASE_BUFFER_LENGTH = 1000;
 
 enum akinatorError {
   AKINATOR_NO_ERRORS        = 0,
@@ -26,7 +27,9 @@ enum akinatorError {
   AKINATOR_TREE_BAD_POINTER = 2,
   BAD_CALLOC_POINTER        = 3,
   BAD_STACK_POINTER         = 4,
-  NO_OBJECT_FOUND           = 5
+  NO_OBJECT_FOUND           = 5,
+  AKINATOR_BAD_BUFFER       = 6,
+  NO_DB_FILE_FOUND          = 7
 };
 
 enum linkType {
