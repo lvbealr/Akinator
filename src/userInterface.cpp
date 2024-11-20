@@ -61,6 +61,8 @@ void chooseMode(Akinator *akinator) {
   customPrint(white, bold, bgDefault, "You can compare two characters!\n");
   customPrint(green, bold, bgDefault, "[B/b] ");
   customPrint(white, bold, bgDefault, "Show Akinator database!\n");
+  customPrint(green, bold, bgDefault, "[R/r] ");
+  customPrint(white, bold, bgDefault, "Read Akinator database!\n");
   customPrint(yellow, bold, bgDefault, "[S/s] ");
   customPrint(white, bold, bgDefault, "Quit the game WITH saving database.\n");
   customPrint(red, bold, bgDefault, "[Q/q] ");
@@ -74,9 +76,10 @@ void chooseMode(Akinator *akinator) {
     case 'G':
     case 'g':
       {
-      guessCharacter(akinator);
-      chooseMode(akinator);
-      break;
+        guessCharacter(akinator);
+        chooseMode(akinator);
+
+        break;
       }
 
     case 'D':
@@ -84,6 +87,7 @@ void chooseMode(Akinator *akinator) {
       {
         describeCharacter(akinator);
         chooseMode(akinator);
+
         break;
       }
 
@@ -92,6 +96,7 @@ void chooseMode(Akinator *akinator) {
       {
         compareCharacters(akinator);
         chooseMode(akinator);
+
         break;
       }
 
@@ -100,6 +105,16 @@ void chooseMode(Akinator *akinator) {
       {
         showBase(akinator);
         chooseMode(akinator);
+
+        break;
+      }
+
+    case 'R':
+    case 'r':
+      {
+        readDataBaseInfo(akinator);
+        chooseMode(akinator);
+
         break;
       }
 
@@ -108,6 +123,7 @@ void chooseMode(Akinator *akinator) {
       {
         quitWithSave(akinator);
         quitWithoutSave(akinator);
+
         break;
       }
 
@@ -115,6 +131,7 @@ void chooseMode(Akinator *akinator) {
     case 'q':
       {
         quitWithoutSave(akinator);
+
         break;
       }
 
@@ -123,6 +140,7 @@ void chooseMode(Akinator *akinator) {
         customPrint(red, bold, bgDefault, "[ERROR] ");
         customPrint(white, bold, bgDefault, "No such gamemode!\n\n");
         chooseMode(akinator);
+
         break;
       }
   }

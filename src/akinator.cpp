@@ -69,6 +69,30 @@ node<char *> *akinatorInitNode(char *value) {
   return initNode;
 }
 
+binaryTreeError akinatorBaseLinkNode(Akinator *akinator, node<char *> **parentNode, node<char *> **newNode, linkDirection direction) {
+  assert(akinator != NULL);
+  customWarning(*parentNode != NULL, NODE_BAD_POINTER);
+  customWarning(*newNode    != NULL, NODE_BAD_POINTER);
+
+  switch (direction) {
+    case LEFT:
+      {
+        (*parentNode)->left = (*newNode);
+        (*newNode)->parent  = (*parentNode);
+        break;
+      }
+
+    case RIGHT:
+      {
+        (*parentNode)->right = (*newNode);
+        (*newNode)->parent   = (*parentNode);
+        break;
+      }
+  }
+
+  return NO_ERRORS;
+}
+
 binaryTreeError akinatorLinkNode(Akinator *akinator, node<char *> **parentNode, node <char *> **newNode, linkType nodeType) {
   assert       (akinator    != NULL);
   customWarning(*parentNode != NULL, NODE_BAD_POINTER);
@@ -151,7 +175,7 @@ binaryTreeError switchNode(Akinator *akinator, node<char *> *currentNode) {
       case 'Y':
       case 'y':
         {
-          customPrint(green, bold, bgDefault, "[SUCCESS]!\n");
+          customPrint(green, bold, bgDefault, "\n[SUCCESS]!\n");
           break;
         }
 
@@ -329,6 +353,179 @@ akinatorError quitWithoutSave   (Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
 
   customPrint(purple, bold, bgDefault, "\nByye! 👋\n");
+
+  return AKINATOR_NO_ERRORS;
+}
+
+void printTabs(int tabCount, FILE *dbOut) {
+  for (int count = 0; count < tabCount; count++) {
+    fprintf(dbOut, "\t");
+  }
+}
+
+binaryTreeError printDataBase(node<char *> *node, FILE *dbOut) {
+  customWarning(node != NULL, NODE_BAD_POINTER);
+
+  static int tabCount = 0;
+  printTabs(tabCount, dbOut);
+
+  fprintf(dbOut, "{");
+
+  if ((node->parent) && (node == node->parent->right)) {
+    fprintf(dbOut, "'%s' r", node->data);
+  }
+
+  else if ((node->parent) && (node == node->parent->left)) {
+    fprintf(dbOut, "'%s' l", node->data);
+  }
+
+  else {
+    fprintf(dbOut, "'%s' 0", node->data);
+  }
+
+  if (node->left) {
+    tabCount++;
+    fprintf(dbOut, "\n");
+    printDataBase(node->left, dbOut);
+  }
+
+  if (node->right) {
+    tabCount++;
+    fprintf(dbOut, "\n");
+    printDataBase(node->right, dbOut);
+  }
+
+  tabCount--;
+
+  fprintf(dbOut, "}\n");
+
+  printTabs(tabCount, dbOut);
+
+  return NO_ERRORS;
+}
+
+akinatorError readDataBaseInfo(Akinator *akinator) {
+  customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
+
+  customPrint(white, bold, bgDefault, "Reading database...\n");
+
+  struct stat fileData = {};
+  stat(akinator->tree->infoData->dataBasePath, &fileData);
+
+  size_t dataBaseSize = fileData.st_size;
+
+  akinator->dataBase = (DB *)calloc(1, sizeof(DB));
+  customWarning(akinator->dataBase != NULL, BAD_DATABASE_POINTER);
+
+  akinator->dataBase->dataBaseBuffer = (char *)calloc(dataBaseSize, sizeof(char));
+
+  int openFile = open(akinator->tree->infoData->dataBasePath, O_RDONLY);
+  customWarning(openFile != -1, NO_DB_FILE_FOUND);
+
+  ssize_t sizeRead = read(openFile, akinator->dataBase->dataBaseBuffer, dataBaseSize);
+  customWarning(sizeRead == dataBaseSize, NO_DB_FILE_FOUND); // TODO
+
+  close(openFile);
+
+  readDataBase(akinator);
+
+  customPrint(green, bold, bgDefault, "Data has been read from the database! (%s)\n", akinator->tree->infoData->dataBasePath);
+
+  return AKINATOR_NO_ERRORS;
+}
+
+akinatorError readLine(Akinator *akinator, char **startPointer, node<char *> *parentNode) {
+  customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
+
+  char *startPtr = *startPointer;
+  char *endPtr   = {};
+
+  DUMP_(akinator->tree);
+
+  char *openBracket  = strchr(startPtr, '{');
+  char *closeBracket = strchr(startPtr, '}');
+
+  char **ptrToCloseBracket = &closeBracket;
+
+  (*ptrToCloseBracket)     = closeBracket + 1;
+
+  if (startPtr == NULL) {
+    return NO_DATA_MORE;
+  }
+
+  if (closeBracket < openBracket) {
+    readLine(akinator, ptrToCloseBracket, parentNode->parent);
+  }
+
+  startPtr = strchr(startPtr, '{');
+
+  if (startPtr == NULL) {
+    return NO_DATA_MORE;
+  }
+
+  startPtr += 2;
+
+  endPtr             = strchr(startPtr, '\'');
+
+  char *typeOfNode   = endPtr + 2;
+
+  *(startPointer)    = typeOfNode + 1;
+
+  if (endPtr == NULL) {
+    return NO_DATA_MORE;
+  }
+
+  *(endPtr) = '\0';
+
+  switch (*typeOfNode) {
+    case '0':
+      {
+        FREE_(akinator->tree->root);
+
+        node<char *> *root   = akinatorInitNode(startPtr);
+        customWarning(root != NULL, BAD_NODE_INITIALIZE);
+
+        akinator->tree->root = root;
+        readLine(akinator, startPointer, root);
+
+        break;
+      }
+
+    case 'l':
+      {
+        node<char *> *leftLeaf = akinatorInitNode(startPtr);
+        customWarning(leftLeaf != NULL, BAD_NODE_INITIALIZE);
+
+        akinatorBaseLinkNode(akinator, &parentNode, &leftLeaf, LEFT);
+        readLine(akinator, startPointer, leftLeaf);
+
+        break;
+      }
+
+    case 'r':
+      {
+        node <char *> *rightLeaf = akinatorInitNode(startPtr);
+        customWarning(rightLeaf != NULL, BAD_NODE_INITIALIZE);
+
+        akinatorBaseLinkNode(akinator, &parentNode, &rightLeaf, RIGHT);
+        readLine(akinator, startPointer, rightLeaf);
+
+        break;
+      }
+
+    default:
+      break;
+  }
+
+  return AKINATOR_NO_ERRORS;
+}
+
+akinatorError readDataBase(Akinator *akinator) {
+  customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
+
+  char *dataBaseStart = akinator->dataBase->dataBaseBuffer;
+
+  readLine(akinator, &dataBaseStart, akinator->tree->root);
 
   return AKINATOR_NO_ERRORS;
 }
