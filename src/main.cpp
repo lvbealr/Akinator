@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
   Akinator akinator = {};
-  akinatorInitialize(&akinator, "Bebra228", argc, argv);
+  akinatorInitialize(&akinator, (char *)"Bebra228", argc, argv);
 
   runAkinator(&akinator);
 

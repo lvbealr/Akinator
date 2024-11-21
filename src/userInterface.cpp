@@ -11,7 +11,7 @@ static const size_t imagesSize = sizeof(images) / sizeof(images[0]);
 
 void userGreeting(Akinator *akinator) {
   system("ascii-image-converter images/4.jpg -C --braille -d 73,30");
-  PLAY_SOUND("audio/hello.wav");
+  PLAY_SOUND((char *)"audio/hello.wav");
   customPrint(red, bold, bgDefault, "\n%s\n", akinatorLogo);
   customPrint(lightblue, bold, bgDefault, "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n");
   customPrint(purple, bold, bgDefault, "  I am DED32 - an AI developed by the great Python Senior Dev @lvbealr\n");
@@ -40,7 +40,7 @@ void userGreeting(Akinator *akinator) {
     case 'Y':
     case 'y':
       {
-        PLAY_SOUND("audio/ded.wav");
+        PLAY_SOUND((char *)"audio/ded.wav");
         break;
       }
 

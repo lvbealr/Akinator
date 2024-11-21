@@ -255,7 +255,7 @@ akinatorError describeCharacter(Akinator *akinator) {
   SCAN_ANSWER(akinator->userAnswer);
 
   if (!strcmp(akinator->userAnswer, "Полторашка")) {
-    PLAY_SOUND("audio/poltorashka.wav");
+    PLAY_SOUND((char *)"audio/poltorashka.wav");
   }
 
   Stack *descriptionStack = fillCharacterStack(akinator);
@@ -439,7 +439,7 @@ akinatorError quitWithoutSave   (Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
 
   customPrint(purple, bold, bgDefault, "\nКТО НЕ СОХРАНЯЕТ БАЗУ ДАННЫХ - ПОЛУЧАЕТ ДРИСНЮ В ЕБАЛЬНИК)) 👋\n");
-  PLAY_SOUND("audio/audio1.wav");
+  PLAY_SOUND((char *)"audio/audio1.wav");
 
   return AKINATOR_NO_ERRORS;
 }
@@ -524,6 +524,12 @@ akinatorError readDataBaseInfo(Akinator *akinator) {
 akinatorError readLine(Akinator *akinator, char **startPointer, node<char *> *parentNode) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
 
+  #define CHECK_TEXT_POINTER(ptr) {   \
+    if (ptr == NULL) {                \
+      return NO_DATA_MORE;            \
+    }                                 \
+  }
+
   char *startPtr = *startPointer;
   char *endPtr   = {};
 
@@ -533,12 +539,9 @@ akinatorError readLine(Akinator *akinator, char **startPointer, node<char *> *pa
   char *closeBracket = strchr(startPtr, '}');
 
   char **ptrToCloseBracket = &closeBracket;
-
   (*ptrToCloseBracket)     = closeBracket + 1;
 
-  if (startPtr == NULL) {
-    return NO_DATA_MORE;
-  }
+  CHECK_TEXT_POINTER(startPtr);
 
   if (closeBracket < openBracket) {
     readLine(akinator, ptrToCloseBracket, parentNode->parent);
@@ -546,21 +549,15 @@ akinatorError readLine(Akinator *akinator, char **startPointer, node<char *> *pa
 
   startPtr = strchr(startPtr, '{');
 
-  if (startPtr == NULL) {
-    return NO_DATA_MORE;
-  }
+  CHECK_TEXT_POINTER(startPtr);
 
   startPtr += 2;
 
   endPtr             = strchr(startPtr, '\'');
-
   char *typeOfNode   = endPtr + 2;
-
   *(startPointer)    = typeOfNode + 1;
 
-  if (endPtr == NULL) {
-    return NO_DATA_MORE;
-  }
+  CHECK_TEXT_POINTER(endPtr);
 
   *(endPtr) = '\0';
 
