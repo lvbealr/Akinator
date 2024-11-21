@@ -41,7 +41,12 @@ stackError stackPush       (Stack *stack, node<char *> *data) {
 stackError stackPop        (Stack *stack, node<char *> **dataPointer) {
   customWarning(stack          != NULL, STACK_NULL_POINTER);
   customWarning(dataPointer    != NULL, BAD_DATA_POINTER  );
-  customWarning(stack->size    >     0, BAD_SIZE          );
+
+  if (stack->size <= 0) {
+    return BAD_SIZE;
+  }
+
+  // customWarning(stack->size    >     0, BAD_SIZE          );
 
   if (stack->size <= stack->capacity / 4) {
     stackResize(stack, DUMP_MEMORY);
