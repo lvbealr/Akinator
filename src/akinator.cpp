@@ -294,6 +294,59 @@ akinatorError describeCharacter(Akinator *akinator) {
   return AKINATOR_NO_ERRORS;
 }
 
+void printCommonFeatures(Stack *firstCharacter, Stack *secondCharacter,
+                         node<char *> **firstNode,  node<char *> **firstNextNode,
+                         node<char *> **secondNode, node<char *> **secondNextNode) {
+
+  while ((*firstNode == *secondNode) && (*firstNextNode == *secondNextNode)) {
+  if (*firstNextNode == (*firstNode)->right) {
+    customPrint(white, bold, bgDefault, "%s ", (*firstNode)->data);
+  }
+
+  else if (*firstNextNode == (*firstNode)->left) {
+    customPrint(white, bold, bgDefault, "не %s ", (*firstNode)->data);
+  }
+
+  *firstNode = *firstNextNode;
+  stackPop(firstCharacter, firstNextNode);
+
+  *secondNode = *secondNextNode;
+  stackPop(secondCharacter, secondNextNode);
+  }
+}
+
+void printSpecialFeatures(Stack *character, node<char *> **chNode, node<char *> **chNextNode) {
+  if (*chNode) {
+    printf("\n");
+
+    customPrint(lightblue, bold, bgDefault, "%s ", character->data[0]->data);
+
+    if (*chNextNode == (*chNode)->right) {
+      customPrint(white, bold, bgDefault, "%s ", (*chNode)->data);
+    }
+
+    else if (*chNextNode == (*chNode)->left) {
+      customPrint(white, bold, bgDefault, "не %s ", (*chNode)->data);
+    }
+
+    *chNode = *chNextNode;
+    stackPop(character, chNextNode);
+
+    while (*chNode != *chNextNode) {
+      if (*chNextNode == (*chNode)->right) {
+        customPrint(white, bold, bgDefault, "%s ", (*chNode)->data);
+      }
+
+      else if (*chNextNode == (*chNode)->left) {
+        customPrint(white, bold, bgDefault, "не %s ", (*chNode)->data);
+      }
+
+      *chNode = *chNextNode;
+      stackPop(character, chNextNode);
+    }
+  }
+}
+
 akinatorError compareCharacters(Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
 
@@ -316,10 +369,30 @@ akinatorError compareCharacters(Akinator *akinator) {
   char *firstName  = firstCharacter->data[0]->data;
   char *secondName = secondCharacter->data[0]->data;
 
-  node<char *> *firstNode  = {};
-  node<char *> *secondNode = {};
+  node<char *> *firstNode      = {};
+  node<char *> *secondNode     = {};
 
-  // TODO
+  node<char *> *firstNextNode  = {};
+  node<char *> *secondNextNode = {};
+
+  stackPop(firstCharacter, &firstNode);
+  stackPop(firstCharacter, &firstNextNode);
+
+  stackPop(secondCharacter, &secondNode);
+  stackPop(secondCharacter, &secondNextNode);
+
+  if ((firstNode == secondNode) && (firstNextNode == secondNextNode)) {
+    customPrint(lightblue, bold, bgDefault, "%s", firstName);
+    customPrint(white, bold, bgDefault, " и ");
+    customPrint(lightblue, bold, bgDefault, "%s ", secondName);
+  }
+
+  printCommonFeatures (firstCharacter, secondCharacter,
+                      &firstNode,     &firstNextNode,
+                      &secondNode,    &secondNextNode);
+
+  printSpecialFeatures(firstCharacter,  &firstNode,  &firstNextNode);
+  printSpecialFeatures(secondCharacter, &secondNode, &secondNextNode);
 
   return AKINATOR_NO_ERRORS;
 }

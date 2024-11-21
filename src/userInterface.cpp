@@ -128,7 +128,7 @@ void chooseMode(Akinator *akinator) {
     case 's':
       {
         quitWithSave(akinator);
-        quitWithoutSave(akinator);
+        customPrint(purple, bold, bgDefault, "\nByeee! 👋\n");
 
         break;
       }
