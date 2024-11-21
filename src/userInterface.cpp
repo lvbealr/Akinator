@@ -3,6 +3,7 @@
 #include "audio.h"
 
 #include "akinator.h"
+#include "phrases.h"
 #include "colorPrint.h"
 
 static const char *images[]    = {"1.jpg", "2.jpg", "3.jpg", "4.jpg"};
@@ -10,6 +11,7 @@ static const size_t imagesSize = sizeof(images) / sizeof(images[0]);
 
 void userGreeting(Akinator *akinator) {
   system("ascii-image-converter images/4.jpg -C --braille -d 73,30");
+  PLAY_SOUND("audio/hello.wav");
   customPrint(red, bold, bgDefault, "\n%s\n", akinatorLogo);
   customPrint(lightblue, bold, bgDefault, "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n");
   customPrint(purple, bold, bgDefault, "  I am DED32 - an AI developed by the great Python Senior Dev @lvbealr\n");
@@ -53,6 +55,7 @@ void userGreeting(Akinator *akinator) {
 }
 
 void chooseMode(Akinator *akinator) {
+  putPhrase(akinator);
   customPrint(lightblue, bold, bgDefault, "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n");
   customPrint(white, bold, bgDefault, "Choose gamemode: \n\n");
   customPrint(green, bold, bgDefault, "[G/g] ");
@@ -140,7 +143,7 @@ void chooseMode(Akinator *akinator) {
 
     default:
       {
-        customPrint(red, bold, bgDefault, "[ERROR] ");
+        customPrint(red, bold, bgDefault, "%s ", phrases[4]);
         customPrint(white, bold, bgDefault, "No such gamemode!\n\n");
         chooseMode(akinator);
 

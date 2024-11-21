@@ -11,6 +11,7 @@
 #include "akinator.h"
 #include "colorPrint.h"
 #include "stack.h"
+#include "audio.h"
 
 akinatorError akinatorInitialize(Akinator *akinator, char *treeRootValue, int argc, char *argv[]) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
@@ -175,7 +176,7 @@ binaryTreeError switchNode(Akinator *akinator, node<char *> *currentNode) {
       case 'Y':
       case 'y':
         {
-          customPrint(green, bold, bgDefault, "\n[SUCCESS]!\n");
+          customPrint(green, bold, bgDefault, "\nThat was easy!\n");
           break;
         }
 
@@ -252,6 +253,10 @@ akinatorError describeCharacter(Akinator *akinator) {
   customPrint(white, bold, bgDefault, "Whose description do you want to receive? ");
 
   SCAN_ANSWER(akinator->userAnswer);
+
+  if (!strcmp(akinator->userAnswer, "Полторашка")) {
+    PLAY_SOUND("audio/poltorashka.wav");
+  }
 
   Stack *descriptionStack = fillCharacterStack(akinator);
   customWarning(descriptionStack != NULL, NO_OBJECT_FOUND);
@@ -360,7 +365,8 @@ akinatorError quitWithSave      (Akinator *akinator) {
 akinatorError quitWithoutSave   (Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
 
-  customPrint(purple, bold, bgDefault, "\nByye! 👋\n");
+  customPrint(purple, bold, bgDefault, "\nКТО НЕ СОХРАНЯЕТ БАЗУ ДАННЫХ - ПОЛУЧАЕТ ДРИСНЮ В ЕБАЛЬНИК)) 👋\n");
+  PLAY_SOUND("audio/audio1.wav");
 
   return AKINATOR_NO_ERRORS;
 }

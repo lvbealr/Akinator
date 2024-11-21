@@ -67,6 +67,7 @@ struct Akinator {
   char               *userAnswer           = {};
   char               *audioMode            = {};
   DB                 *dataBase             = {};
+  const char        **phrases              = {};
 };
 
 // FUNCTION PROTOTYPES //
