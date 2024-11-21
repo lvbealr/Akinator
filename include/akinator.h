@@ -5,6 +5,24 @@
 
 #include "binaryTreeExtensions.h"
 
+const size_t MAX_TRASH_BUFFER_SIZE = 100;
+
+#define SCAN_ANSWER(pointer) {                                      \
+  char *answer = (char *)calloc(MAX_ANSWER_LENGTH, sizeof(char));   \
+                                                                    \
+  scanf("%[^\n]", answer);                                          \
+  strncpy(pointer, answer, MAX_ANSWER_LENGTH);                      \
+                                                                    \
+  FREE_(answer);                                                    \
+                                                                    \
+  CLEAN_BUFFER();                                                   \
+}
+
+#define CLEAN_BUFFER() {                           \
+  char ch = {};                                    \
+  while ((ch = getchar()) != '\n' && ch != EOF) {} \
+}
+
 static const char *akinatorLogo =   " _____   ______  _____   _____  _   _      _    _______    ____   _____ \n"
                                     "|  __ / |  ____||  __ / |_   _|| / | |    / /  |__   __| / __ / |  __ / \n"
                                     "| |  | || |__   | |  | |  | |  |  /| |   / _ /    | |    | |  | || |__) | \n"
@@ -36,8 +54,8 @@ enum linkType {
 };
 
 enum linkDirection {
-  LEFT  = 'l',
-  RIGHT = 'r'
+  LEFT  = 'n',
+  RIGHT = 'y'
 };
 
 struct DB {

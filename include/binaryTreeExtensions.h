@@ -25,54 +25,6 @@ static node<char *> *binaryTreeFindNode(node<char *> *currentNode, char *value) 
   return ptrToNode;
 }
 
-static void printTabs(int tabCount, FILE *dbOut) {
-  for (int count = 0; count < tabCount; count++) {
-    fprintf(dbOut, "\t");
-  }
-}
-
-static binaryTreeError printDataBase(node<char *> *node, FILE *dbOut) {
-  customWarning(node != NULL, NODE_BAD_POINTER);
-
-
-  static int tabCount = 0;
-  printTabs(tabCount, dbOut);
-
-  fprintf(dbOut, "{");
-
-  if ((node->parent) && (node == node->parent->right)) {
-    fprintf(dbOut, "'%s'", node->data);
-  }
-
-  else if ((node->parent) && (node == node->parent->left)) {
-    fprintf(dbOut, "'%s'", node->data);
-  }
-
-  else {
-    fprintf(dbOut, "'%s'", node->data);
-  }
-
-  if (node->left) {
-    tabCount++;
-    fprintf(dbOut, "\n");
-    printDataBase(node->left, dbOut);
-  }
-
-  if (node->right) {
-    tabCount++;
-    fprintf(dbOut, "\n");
-    printDataBase(node->right, dbOut);
-  }
-
-  tabCount--;
-
-  fprintf(dbOut, "}\n");
-
-  printTabs(tabCount, dbOut);
-
-  return NO_ERRORS;
-}
-
 static binaryTreeError printBinaryTree(node<char *> *node) {
   customWarning(node != NULL, NODE_BAD_POINTER);
 
