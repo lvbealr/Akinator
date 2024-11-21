@@ -31,7 +31,8 @@ void userGreeting(Akinator *akinator) {
   printf("\n");
 
   customPrint(green, bold, bgDefault, "Would you play in audio mode? [Y(N)/y(n)]: ");
-  scanf("%1s", akinator->audioMode);
+
+  SCAN_ANSWER(akinator->audioMode);
 
   switch (*akinator->audioMode) {
     case 'Y':
@@ -52,7 +53,8 @@ void userGreeting(Akinator *akinator) {
 }
 
 void chooseMode(Akinator *akinator) {
-  customPrint(white, bold, bgDefault, "\nChoose gamemode: \n\n");
+  customPrint(lightblue, bold, bgDefault, "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n");
+  customPrint(white, bold, bgDefault, "Choose gamemode: \n\n");
   customPrint(green, bold, bgDefault, "[G/g] ");
   customPrint(white, bold, bgDefault, "I'll try to guess the character you wished for!\n");
   customPrint(green, bold, bgDefault, "[D/d] ");
@@ -67,10 +69,11 @@ void chooseMode(Akinator *akinator) {
   customPrint(white, bold, bgDefault, "Quit the game WITH saving database.\n");
   customPrint(red, bold, bgDefault, "[Q/q] ");
   customPrint(white, bold, bgDefault, "Quit the game WITHOUT saving :(\n\n");
+  customPrint(lightblue, bold, bgDefault, "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n");
 
   customPrint(white, underlined, bgDefault, "ENTER:\t");
 
-  scanf("%s", akinator->userAnswer);
+  SCAN_ANSWER(akinator->userAnswer);
 
   switch (*akinator->userAnswer) {
     case 'G':

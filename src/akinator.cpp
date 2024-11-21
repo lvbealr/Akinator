@@ -144,11 +144,11 @@ binaryTreeError switchNode(Akinator *akinator, node<char *> *currentNode) {
   assert       (akinator    != NULL);
   customWarning(currentNode != NULL, NODE_BAD_POINTER);
 
-  customPrint(white, bold, bgDefault, "It ");
+  customPrint(white, bold, bgDefault, "");
   customPrint(lightblue, bold, bgDefault, "%s? ", currentNode->data);
   printf("Your answer [Y(y)/N(n)]: ");
 
-  scanf("%s", akinator->userAnswer);
+  SCAN_ANSWER(akinator->userAnswer);
 
   if (currentNode->right && currentNode->left) {
     switch (*akinator->userAnswer) {
@@ -183,12 +183,15 @@ binaryTreeError switchNode(Akinator *akinator, node<char *> *currentNode) {
       case 'n':
         {
           customPrint(white, bold, bgDefault, "I can't guess. What did you wish for?\n");
-          scanf("%s", akinator->userAnswer);
+
+          SCAN_ANSWER(akinator->userAnswer);
+
           size_t len = 0;
           node<char *> *character = akinatorInitNode(akinator->userAnswer);
 
           customPrint(white, bold, bgDefault, "What's the difference between %s and %s?\n", character->data, currentNode->data);
-          scanf("%s", akinator->userAnswer);
+
+          SCAN_ANSWER(akinator->userAnswer);
 
           node<char *> *feature = akinatorInitNode(akinator->userAnswer);
 
@@ -247,7 +250,8 @@ akinatorError describeCharacter(Akinator *akinator) {
   customWarning(akinator != NULL, AKINATOR_BAD_POINTER);
 
   customPrint(white, bold, bgDefault, "Whose description do you want to receive? ");
-  scanf("%s", akinator->userAnswer);
+
+  SCAN_ANSWER(akinator->userAnswer);
 
   Stack *descriptionStack = fillCharacterStack(akinator);
   customWarning(descriptionStack != NULL, NO_OBJECT_FOUND);
@@ -271,7 +275,7 @@ akinatorError describeCharacter(Akinator *akinator) {
     }
 
     else {
-      printf("not %s ", popNodeCopy->data);
+      printf("не %s ", popNodeCopy->data);
     }
 
     popNodeCopy = popNode;
@@ -291,12 +295,16 @@ akinatorError compareCharacters(Akinator *akinator) {
   customPrint(white, bold, bgDefault, "Enter the names of the objects you want to compare!\n");
 
   printf("First object: ");
-  scanf("%s", akinator->userAnswer);
+
+  SCAN_ANSWER(akinator->userAnswer);
+
   Stack *firstCharacter  = fillCharacterStack(akinator);
   customWarning(firstCharacter != NULL, NO_OBJECT_FOUND);
 
   printf("Second object: ");
-  scanf("%s", akinator->userAnswer);
+
+  SCAN_ANSWER(akinator->userAnswer);
+
   Stack *secondCharacter = fillCharacterStack(akinator);
   customWarning(secondCharacter != NULL, NO_OBJECT_FOUND);
 
@@ -372,11 +380,11 @@ binaryTreeError printDataBase(node<char *> *node, FILE *dbOut) {
   fprintf(dbOut, "{");
 
   if ((node->parent) && (node == node->parent->right)) {
-    fprintf(dbOut, "'%s' r", node->data);
+    fprintf(dbOut, "'%s' y", node->data);
   }
 
   else if ((node->parent) && (node == node->parent->left)) {
-    fprintf(dbOut, "'%s' l", node->data);
+    fprintf(dbOut, "'%s' n", node->data);
   }
 
   else {
@@ -491,7 +499,7 @@ akinatorError readLine(Akinator *akinator, char **startPointer, node<char *> *pa
         break;
       }
 
-    case 'l':
+    case 'n':
       {
         node<char *> *leftLeaf = akinatorInitNode(startPtr);
         customWarning(leftLeaf != NULL, BAD_NODE_INITIALIZE);
@@ -502,7 +510,7 @@ akinatorError readLine(Akinator *akinator, char **startPointer, node<char *> *pa
         break;
       }
 
-    case 'r':
+    case 'y':
       {
         node <char *> *rightLeaf = akinatorInitNode(startPtr);
         customWarning(rightLeaf != NULL, BAD_NODE_INITIALIZE);
