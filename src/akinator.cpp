@@ -276,11 +276,12 @@ akinatorError describeCharacter(Akinator *akinator) {
     stackPop(descriptionStack, &popNode);
 
     if (popNode == popNodeCopy->right) {
-      printf("%s ", popNodeCopy->data);
+      customPrint(green, bold, bgDefault, "%s ", popNodeCopy->data);
     }
 
     else {
-      printf("не %s ", popNodeCopy->data);
+      customPrint(red, bold, bgDefault, "не ");
+      customPrint(white, bold, bgDefault, "%s ", popNodeCopy->data);
     }
 
     popNodeCopy = popNode;
@@ -300,11 +301,12 @@ void printCommonFeatures(Stack *firstCharacter, Stack *secondCharacter,
 
   while ((*firstNode == *secondNode) && (*firstNextNode == *secondNextNode)) {
   if (*firstNextNode == (*firstNode)->right) {
-    customPrint(white, bold, bgDefault, "%s ", (*firstNode)->data);
+    customPrint(green, bold, bgDefault, "%s ", (*firstNode)->data);
   }
 
   else if (*firstNextNode == (*firstNode)->left) {
-    customPrint(white, bold, bgDefault, "не %s ", (*firstNode)->data);
+    customPrint(red, bold, bgDefault, "не ");
+    customPrint(white, bold, bgDefault, "%s ", (*firstNode)->data);
   }
 
   *firstNode = *firstNextNode;
@@ -322,11 +324,12 @@ void printSpecialFeatures(Stack *character, node<char *> **chNode, node<char *> 
     customPrint(lightblue, bold, bgDefault, "%s ", character->data[0]->data);
 
     if (*chNextNode == (*chNode)->right) {
-      customPrint(white, bold, bgDefault, "%s ", (*chNode)->data);
+      customPrint(green, bold, bgDefault, "%s ", (*chNode)->data);
     }
 
     else if (*chNextNode == (*chNode)->left) {
-      customPrint(white, bold, bgDefault, "не %s ", (*chNode)->data);
+      customPrint(red, bold, bgDefault, "не ");
+      customPrint(white, bold, bgDefault, "%s ", (*chNode)->data);
     }
 
     *chNode = *chNextNode;
@@ -334,11 +337,12 @@ void printSpecialFeatures(Stack *character, node<char *> **chNode, node<char *> 
 
     while (*chNode != *chNextNode) {
       if (*chNextNode == (*chNode)->right) {
-        customPrint(white, bold, bgDefault, "%s ", (*chNode)->data);
+        customPrint(green, bold, bgDefault, "%s ", (*chNode)->data);
       }
 
       else if (*chNextNode == (*chNode)->left) {
-        customPrint(white, bold, bgDefault, "не %s ", (*chNode)->data);
+        customPrint(red, bold, bgDefault, "не ");
+        customPrint(white, bold, bgDefault, "%s ", (*chNode)->data);
       }
 
       *chNode = *chNextNode;
