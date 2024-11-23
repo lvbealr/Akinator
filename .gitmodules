@@ -4,7 +4,3 @@
 [submodule "colorPrint"]
 	path = colorPrint
 	url = git@github.com:lvbealr/colorPrint.git
-[submodule "binaryTree"]
-	path = binaryTree
-	url = git@github.com:lvbealr/binaryTree.git
-	branch = basedOnTemplate
