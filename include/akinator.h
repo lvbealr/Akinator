@@ -45,7 +45,8 @@ enum akinatorError {
   BAD_DATABASE_POINTER      =  8,
   NO_DATA_MORE              =  9,
   DOUBLE_ROOT_INITIALIZE    = 10,
-  BAD_NODE_INITIALIZE       = 11
+  BAD_NODE_INITIALIZE       = 11,
+  BAD_STACK                 = 12
 };
 
 enum linkType {
